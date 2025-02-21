@@ -4,22 +4,17 @@ import { Container, Row, Col, Button, Card, Form } from "react-bootstrap";
 import "./LandingPage.css";
 
 const initialAuctions = [
-  { id: 1, name: "iPhone", image: "/images/iphone.webp", price: 75999, highestBid: 75999, timeLeft: 172800 }, // 2 days
-  { id: 2, name: "Laptop", image: "/images/laptop.jpg", price: 69999, highestBid: 69999, timeLeft: 259200 }, // 3 days
-  { id: 3, name: "Watch", image: "/images/watch1.webp", price: 4999, highestBid: 4999, timeLeft: 86400 }, // 1 day
-  { id: 4, name: "Headphone", image: "/images/headphone.jpg", price: 6999, highestBid: 6999, timeLeft: 43200 }, // 12 hours
+  { id: 1, name: "iPhone", image: "/images/iphone.webp", price: 75999, highestBid: 75999, timeLeft: 172800 }, 
+  { id: 2, name: "Laptop", image: "/images/laptop.jpg", price: 69999, highestBid: 69999, timeLeft: 259200 }, 
+  { id: 3, name: "Watch", image: "/images/watch1.webp", price: 4999, highestBid: 4999, timeLeft: 86400 }, 
+  { id: 4, name: "Headphone", image: "/images/headphone.jpg", price: 6999, highestBid: 6999, timeLeft: 43200 }, 
 ];
 
-// Utility function to format time
 const formatTimeLeft = (timeLeft) => {
-  const days = Math.floor(timeLeft / 86400); // 1 day = 86400 seconds
-  const hours = Math.floor((timeLeft % 86400) / 3600); // Remaining hours
+  const days = Math.floor(timeLeft / 86400);
+  const hours = Math.floor((timeLeft % 86400) / 3600);
   const minutes = Math.floor((timeLeft % 3600) / 60);
-  const seconds = timeLeft % 60;
-
-  if (timeLeft <= 0) return "Auction Closed";
-  
-  return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  return timeLeft <= 0 ? "Auction Closed" : `${days}d ${hours}h ${minutes}m`;
 };
 
 const LandingPage = () => {
@@ -41,13 +36,12 @@ const LandingPage = () => {
       setAuctions((prevAuctions) => {
         const updatedAuctions = prevAuctions.map((auction) => ({
           ...auction,
-          timeLeft: auction.timeLeft > 0 ? auction.timeLeft - 1 : 0,
-          status: auction.timeLeft <= 1 ? "Closed" : "Active",
+          timeLeft: auction.timeLeft > 0 ? auction.timeLeft - 60 : 0,
         }));
         localStorage.setItem("auctions", JSON.stringify(updatedAuctions));
         return updatedAuctions;
       });
-    }, 1000);
+    }, 60000);
 
     return () => clearInterval(timer);
   }, []);
@@ -65,21 +59,24 @@ const LandingPage = () => {
   };
 
   const handlePostAuction = () => {
-    if (newAuction.name && newAuction.image && newAuction.price) {
-      const newItem = {
-        id: auctions.length + 1,
-        name: newAuction.name,
-        image: newAuction.image,
-        price: parseInt(newAuction.price),
-        highestBid: parseInt(newAuction.price),
-        timeLeft: parseInt(newAuction.timeLeft),
-        status: "Active",
-      };
-      const updatedAuctions = [...auctions, newItem];
-      setAuctions(updatedAuctions);
-      localStorage.setItem("auctions", JSON.stringify(updatedAuctions));
-      setNewAuction({ name: "", image: "", price: "", timeLeft: 86400 });
+    if (!newAuction.name || !newAuction.image || !newAuction.price) {
+      alert("Please fill all fields.");
+      return;
     }
+
+    const newItem = {
+      id: auctions.length + 1,
+      name: newAuction.name,
+      image: newAuction.image,
+      price: parseInt(newAuction.price),
+      highestBid: parseInt(newAuction.price),
+      timeLeft: parseInt(newAuction.timeLeft),
+    };
+
+    const updatedAuctions = [...auctions, newItem];
+    setAuctions(updatedAuctions);
+    localStorage.setItem("auctions", JSON.stringify(updatedAuctions));
+    setNewAuction({ name: "", image: "", price: "", timeLeft: 86400 });
   };
 
   const scrollToPostAuction = () => {
@@ -95,9 +92,7 @@ const LandingPage = () => {
       {/* Header Section */}
       <Row className="d-flex justify-content-between align-items-center mb-3">
         <Col>
-          <h1 className="fw-bold">
-            Welcome to <span className="brand">AuctionKart</span>
-          </h1>
+          <h1 className="fw-bold">Welcome to <span className="brand">AuctionKart</span></h1>
         </Col>
         <Col className="text-end">
           {isAuthenticated ? (
@@ -142,52 +137,50 @@ const LandingPage = () => {
         </Col>
       </Row>
 
-      {/* Trending Auctions */}
+      {/* Auctions List */}
       <h2 className="mt-4">🔥 Trending Auctions</h2>
       <Row className="mt-3">
-        {filteredAuctions.length > 0 ? (
-          filteredAuctions.map((item, index) => (
-            <Col md={3} key={index}>
-              <Card className="product-card">
-                <Card.Img variant="top" src={item.image} className="auction-img" />
-                <Card.Body>
-                  <Card.Title>{item.name}</Card.Title>
-                  <Card.Text>
-                    <strong>Starting Price:</strong> ₹{item.price} <br />
-                    <strong>Highest Bid:</strong> ₹{item.highestBid} <br />
-                    <strong>Status:</strong> {item.timeLeft > 0 ? "Active" : "Closed"} <br />
-                    {item.timeLeft > 0 ? (
-                      <small>Time Left: {formatTimeLeft(item.timeLeft)}</small>
-                    ) : (
-                      <span className="text-danger">Auction Closed</span>
-                    )}
-                  </Card.Text>
-                  {isAuthenticated && item.timeLeft > 0 ? (
-                    <Form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        handleBid(item.id, parseInt(e.target.bid.value));
-                        e.target.reset();
-                      }}
-                    >
-                      <Form.Group>
-                        <Form.Control type="number" name="bid" min={item.highestBid + 1} placeholder="Enter bid" required />
-                      </Form.Group>
-                      <Button type="submit" variant="success" className="mt-2">Place Bid</Button>
-                    </Form>
-                  ) : (
-                    <Button variant="secondary" disabled>Bid Now</Button>
-                  )}
-                </Card.Body>
-              </Card>
-            </Col>
-          ))
-        ) : (
-          <Col className="text-center">
-            <h4 className="text-danger mt-3">❌ No auctions found!</h4>
+        {filteredAuctions.map((item) => (
+          <Col md={3} key={item.id}>
+            <Card className="product-card">
+              <Card.Img variant="top" src={item.image} className="auction-img" />
+              <Card.Body>
+                <Card.Title>{item.name}</Card.Title>
+                <Card.Text>
+                  <strong>Starting Price:</strong> ₹{item.price} <br />
+                  <strong>Highest Bid:</strong> ₹{item.highestBid} <br />
+                  <strong>Time Left:</strong> {formatTimeLeft(item.timeLeft)}
+                </Card.Text>
+                {isAuthenticated && item.timeLeft > 0 ? (
+                  <Form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleBid(item.id, parseInt(e.target.bid.value));
+                      e.target.reset();
+                    }}
+                  >
+                    <Form.Control type="number" name="bid" min={item.highestBid + 1} placeholder="Enter bid" required />
+                    <Button type="submit" variant="success" className="mt-2">Place Bid</Button>
+                  </Form>
+                ) : (
+                  <Button variant="secondary" disabled>Bid Now</Button>
+                )}
+              </Card.Body>
+            </Card>
           </Col>
-        )}
+        ))}
       </Row>
+
+      {/* Post Auction Section */}
+      <div ref={postAuctionRef} className="mt-5">
+        <h3 className="text-center">📝 Post a New Auction</h3>
+        <Form className="mt-3">
+          <Form.Control type="text" placeholder="Item Name" value={newAuction.name} onChange={(e) => setNewAuction({ ...newAuction, name: e.target.value })} className="mb-2" />
+          <Form.Control type="text" placeholder="Image URL" value={newAuction.image} onChange={(e) => setNewAuction({ ...newAuction, image: e.target.value })} className="mb-2" />
+          <Form.Control type="number" placeholder="Starting Price (₹)" value={newAuction.price} onChange={(e) => setNewAuction({ ...newAuction, price: e.target.value })} className="mb-2" />
+          <Button variant="success" onClick={handlePostAuction}>Post Auction</Button>
+        </Form>
+      </div>
     </Container>
   );
 };
