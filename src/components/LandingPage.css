@@ -1,0 +1,145 @@
+/* General styles */
+body {
+    background-color: #f8f9fa;
+  }
+  
+  /* Header Section */
+  .hero-section h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #ff6f00;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .hero-section p {
+    font-size: 1.3rem;
+    color: #333;
+  }
+  
+  .hero-section {
+    padding: 60px 0;
+    background: linear-gradient(120deg, #ff9800, #ff6f00);
+    color: white;
+    border-radius: 10px;
+  }
+  
+  .hero-section button {
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 12px 24px;
+  }
+  
+  /* Top Navigation Buttons */
+  .top-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  /* Post Auction Button */
+  .post-auction-button {
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 12px 24px;
+    background-color: #ff6f00;
+    border: none;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+  }
+  
+  .post-auction-button:hover {
+    background-color: #e65100;
+  }
+  
+  /* Trending Auctions */
+  h2 {
+    color: #ff6f00;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  /* Product Cards */
+  .product-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .product-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .product-card img {
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .product-card .card-body {
+    text-align: center;
+  }
+  
+  .product-card button {
+    width: 100%;
+    font-size: 1.1rem;
+    font-weight: bold;
+  }
+  
+  /* Post Auction Section */
+  .post-auction-section {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+  }
+  
+  .post-auction-section h2 {
+    text-align: center;
+    color: #ff6f00;
+    font-weight: bold;
+  }
+  
+  .post-auction-section input {
+    font-size: 1.1rem;
+    padding: 10px;
+  }
+  
+  .post-auction-section button {
+    width: 100%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: #ff6f00;
+    border: none;
+    transition: background 0.3s ease;
+  }
+  
+  .post-auction-section button:hover {
+    background-color: #e65100;
+  }
+  
+  /* Timer and Status */
+  .product-card .status {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #e65100;
+  }
+  
+  .product-card .time-left {
+    font-size: 0.9rem;
+    color: #333;
+  }
+  .auction-img {
+    width: 100%; /* Ensure image covers full width of the card */
+    height: 200px; /* Fixed height for uniformity */
+    object-fit: cover; /* Ensures image fits well without distortion */
+    border-radius: 10px; /* Smooth rounded corners */
+  }
+  .auction-img {
+    width: 100%;  /* Make image take full width of the card */
+    height: 180px; /* Set a fixed height */
+    object-fit: contain; /* Ensure the entire image is visible */
+    border-radius: 10px; /* Smooth corners */
+    background-color: #f8f9fa; /* Light background to handle transparent images */
+    padding: 5px; /* Space around the image */
+  }
+      
